@@ -6,62 +6,62 @@ from game.tamagochi import AbstractTamagochi
 
 
 class AbstractGame(ABC):
-    """Абстрактный интерфейс игровой логики."""
+    """абстрактный интерфейс игровой логики"""
 
     @abstractmethod
     def __init__(self, tamagochi: AbstractTamagochi, clicker: AbstractClicker,
                  all_food: list[Food], all_medicine: list[Medicine]) -> None:
-        """Инициализирует игру."""
+        """инициализирует игру"""
 
     @abstractmethod
     def work(self) -> int:
-        """Зарабатывает деньги."""
+        """зарабатывает деньги"""
 
     @abstractmethod
     def buy_food(self, food_name: str | None = None) -> None:
-        """Покупает еду."""
+        """покупает еду"""
 
     @abstractmethod
     def buy_medicine(self, medicine_name: str | None = None) -> None:
-        """Покупает лекарство."""
+        """покупает лекарство"""
 
     @abstractmethod
     def feed_tamagochi(self, food_name: str | None = None) -> None:
-        """Кормит питомца."""
+        """кормит питомца"""
 
     @abstractmethod
     def heal_tamagochi(self, medicine_name: str | None = None) -> None:
-        """Лечит питомца."""
+        """лечит питомца"""
 
     @abstractmethod
     def rest_tamagochi(self) -> None:
-        """Отправляет питомца отдыхать."""
+        """отправляет питомца отдыхать"""
 
     @abstractmethod
     def play_with_tamagochi(self) -> None:
-        """Играет с питомцем."""
+        """играет с питомцем"""
 
     @abstractmethod
     def get_status(self) -> dict:
-        """Возвращает состояние игры."""
+        """возвращает состояние игры"""
 
     @property
     @abstractmethod
     def food(self) -> list[Food]:
-        """Возвращает ассортимент еды."""
+        """возвращает ассортимент еды"""
 
     @property
     @abstractmethod
     def medicine(self) -> list[Medicine]:
-        """Возвращает ассортимент лекарств."""
+        """возвращает ассортимент лекарств"""
 
 
 class SimpleGame(AbstractGame):
-    """Реализация игровой логики, денег и инвентаря."""
+    """реализация игровой логики, денег и инвентаря"""
 
     def __init__(self, tamagochi: AbstractTamagochi, clicker: AbstractClicker,
                  all_food: list[Food], all_medicine: list[Medicine]) -> None:
-        """Сохраняет компоненты игры и создаёт инвентарь."""
+        """сохраняет компоненты игры и создаёт инвентарь"""
         self._tamagochi = tamagochi
         self._clicker = clicker
         self._all_food = all_food
@@ -72,16 +72,16 @@ class SimpleGame(AbstractGame):
 
     @property
     def tamagochi(self) -> AbstractTamagochi:
-        """Возвращает питомца для отображения состояния."""
+        """возвращает питомца для отображения состояния"""
         return self._tamagochi
 
     def _check_alive(self) -> None:
-        """Запрещает действия с погибшим питомцем."""
+        """запрещает действия с погибшим питомцем"""
         if not self._tamagochi.is_alive():
             raise PetIsDeadError("Питомец погиб")
 
     def work(self) -> int:
-        """Выполняет клик, начисляет деньги и обновляет питомца."""
+        """выполняет клик, начисляет деньги и обновляет питомца"""
         self._check_alive()
         self._clicker.click()
         earned = self._clicker.income_per_click
@@ -90,7 +90,7 @@ class SimpleGame(AbstractGame):
         return earned
 
     def buy_food(self, food_name: str | None = None) -> None:
-        """Покупает названную еду или первую доступную."""
+        """покупает названную еду или первую доступную"""
         self._check_alive()
         item = next((f for f in self._all_food if food_name is None or f.name == food_name), None)
         if item is None:
@@ -102,7 +102,7 @@ class SimpleGame(AbstractGame):
         self._tamagochi.update()
 
     def buy_medicine(self, medicine_name: str | None = None) -> None:
-        """Покупает названное лекарство или первое доступное."""
+        """покупает названное лекарство или первое доступное"""
         self._check_alive()
         item = next((m for m in self._all_medicine if medicine_name is None or m.name == medicine_name), None)
         if item is None:
@@ -114,7 +114,7 @@ class SimpleGame(AbstractGame):
         self._tamagochi.update()
 
     def feed_tamagochi(self, food_name: str | None = None) -> None:
-        """Кормит питомца выбранной едой из инвентаря."""
+        """кормит питомца выбранной едой из инвентаря"""
         self._check_alive()
         item = next((f for f in self._inventory_food if food_name is None or f.name == food_name), None)
         if item is None:
@@ -124,7 +124,7 @@ class SimpleGame(AbstractGame):
         self._tamagochi.update()
 
     def heal_tamagochi(self, medicine_name: str | None = None) -> None:
-        """Лечит питомца доступным лекарством."""
+        """лечит питомца доступным лекарством"""
         self._check_alive()
         item = next((m for m in self._inventory_medicine
                      if (medicine_name is None or m.name == medicine_name) and not m.is_empty()), None)
@@ -136,23 +136,23 @@ class SimpleGame(AbstractGame):
         self._tamagochi.update()
 
     def rest_tamagochi(self) -> None:
-        """Восстанавливает силы питомца."""
+        """восстанавливает силы питомца"""
         self._check_alive()
         self._tamagochi.rest()
         self._tamagochi.update()
 
     def rest(self) -> None:
-        """Совместимый псевдоним метода отдыха."""
+        """совместимый псевдоним метода отдыха"""
         self.rest_tamagochi()
 
     def play_with_tamagochi(self) -> None:
-        """Играет с питомцем и обновляет состояние."""
+        """играет с питомцем и обновляет состояние"""
         self._check_alive()
         self._tamagochi.play()
         self._tamagochi.update()
 
     def get_status(self) -> dict:
-        """Возвращает деньги, показатели и инвентарь."""
+        """возвращает деньги, показатели и инвентарь"""
         pet_status = self._tamagochi.status()
         return {**pet_status, "coins": self._money, "money": self._money,
                 "hp": pet_status.get("hp", pet_status.get("health", 0)),
@@ -163,10 +163,10 @@ class SimpleGame(AbstractGame):
 
     @property
     def food(self) -> list[Food]:
-        """Возвращает каталог еды."""
+        """возвращает каталог еды"""
         return self._all_food
 
     @property
     def medicine(self) -> list[Medicine]:
-        """Возвращает каталог лекарств."""
+        """возвращает каталог лекарств"""
         return self._all_medicine

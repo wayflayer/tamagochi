@@ -21,5 +21,5 @@ class Medicine:
     uses: int = 0
 
     def is_empty(self) -> bool:
-        """проверяет, остались ли еще  лекарства"""
+        """проверяет, остались ли ещё лекарства"""
         return self.uses >= self.number_of_uses

@@ -5,7 +5,7 @@ from game.tamagochi import SimpleTamagochi
 
 
 def main() -> None:
-    """Запускает консольную игру."""
+    """запускает консольную игру"""
     all_food = [Food("Бургер", 20, 40), Food("Салат", 10, 20), Food("Яблоко", 10, 15)]
     all_medicine = [Medicine("Ибупрофен", 30, 20, 2)]
     tamagochi = SimpleTamagochi()
@@ -20,7 +20,7 @@ def main() -> None:
         print(f"\nСтатус: голод {status['hunger']}, здоровье {status['hp']}, энергия {status['energy']}, монет {status['coins']}")
         print("1. Работа\n2. Купить еду\n3. Купить лекарство\n4. Покормить\n5. Вылечить\n6. Играть\n7. Отдых\n0. Выход")
         try:
-            choice = input("Выберите действие: ").strip()
+            choice = str(input("Выберите действие: ")).strip()
         except (EOFError, KeyboardInterrupt):
             break
         try:

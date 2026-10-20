@@ -5,7 +5,7 @@ class GameError(Exception):
 
 
 class NotEnoughMoneyError(GameError):
-    """ыызывается, если недостаточно монет"""
+    """вызывается, если недостаточно монет"""
 
     pass
 
