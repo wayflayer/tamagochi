@@ -2,13 +2,17 @@ class GameError(Exception):
     """базовое исключение для игры"""
 
 
-class NotEnoughMoneyError(GameError):
-    """вызывается, если недостаточно монет"""
+class NotEnoughMoney(GameError):
+    """возникает при нехватке монет для покупки"""
+
+
+class TamagochiIsGone(GameError):
+    """возникает при попытке действовать с погибшим питомцем"""
 
 
 class ItemNotFoundError(GameError):
-    """вызывается, если предмет не найден"""
+    """возникает, если предмет не найден"""
 
 
-class PetIsDeadError(GameError):
-    """вызывается при попытке совершить действие с мёртвым питомцем"""
+NotEnoughMoneyError = NotEnoughMoney
+PetIsDeadError = TamagochiIsGone

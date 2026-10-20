@@ -168,10 +168,10 @@ class SimpleGame(AbstractGame):
 
     @property
     def food(self) -> list[Food]:
-        """возвращает каталог еды"""
-        return self._all_food
+        """возвращает еду, находящуюся в инвентаре"""
+        return self._inventory_food
 
     @property
     def medicine(self) -> list[Medicine]:
-        """возвращает каталог лекарств"""
-        return self._all_medicine
+        """возвращает лекарства, находящиеся в инвентаре"""
+        return self._inventory_medicine

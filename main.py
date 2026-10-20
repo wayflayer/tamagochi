@@ -30,13 +30,13 @@ def main() -> None:
             if choice == "1":
                 print(f"Заработано {game.work()} монет")
             elif choice == "2":
-                for i, item in enumerate(game.food, 1): print(f"{i}. {item.name} — {item.price}")
+                for i, item in enumerate(all_food, 1): print(f"{i}. {item.name} — {item.price}")
                 idx = int(input("Номер еды: ")) - 1
-                game.buy_food(game.food[idx].name)
+                game.buy_food(all_food[idx].name)
             elif choice == "3":
-                for i, item in enumerate(game.medicine, 1): print(f"{i}. {item.name} — {item.price}")
+                for i, item in enumerate(all_medicine, 1): print(f"{i}. {item.name} — {item.price}")
                 idx = int(input("Номер лекарства: ")) - 1
-                game.buy_medicine(game.medicine[idx].name)
+                game.buy_medicine(all_medicine[idx].name)
             elif choice == "4":
                 game.feed_tamagochi()
             elif choice == "5":
