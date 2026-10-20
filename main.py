@@ -5,93 +5,49 @@ from game.tamagochi import SimpleTamagochi
 
 
 def main() -> None:
-    """точка входа в игру тамагочи кликер"""
-    all_food = [
-        Food(name="Бургер", satiety=20, price=40),
-        Food(name="Салат", satiety=10, price=20),
-        Food(name="Яблоко", satiety=10, price=15),
-    ]
-
-    all_medicine = [
-        Medicine(name="Ибупрофен", price=30, heal_hp=20, number_of_uses=2)
-    ]
-
+    """запускает консольную игру"""
+    all_food = [Food("Бургер", 20, 40), Food("Салат", 10, 20), Food("Яблоко", 10, 15)]
+    all_medicine = [Medicine("Ибупрофен", 30, 20, 2)]
     tamagochi = SimpleTamagochi()
-    clicker = SimpleRandomClicker(income_per_click=15)
+    clicker = SimpleRandomClicker(10, 20)
     game = SimpleGame(tamagochi, clicker, all_food, all_medicine)
-
     print("Добро пожаловать в тамагочи-кликер!")
-    
     while True:
         status = game.get_status()
         if not status["is_alive"]:
-            print("\nGame Over! Ваш питомец погиб.")
+            print("Game Over! Ваш питомец погиб")
             break
-
-        print("\n--- СТАТУС ИГРЫ ---")
-        print(f"Монеты: {status['money']}")
-        print(f"Питомец: {status['pet']}")
-        print(f"Болен: {status['is_sick']}")
-        print(f"Сумка с едой: {status['inventory_food']}")
-        print(f"Сумка с лекарствами: {status['inventory_medicine']}")
-        
-        print("\nВыберите действие:")
-        print("1. Работать (клик)")
-        print("2. Купить еду")
-        print("3. Купить лекарство")
-        print("4. Покормить питомца")
-        print("5. Лечить питомца")
-        print("6. Поиграть с питомцем")
-        print("7. Отдохнуть")
-        print("0. Выход")
-
-        choice = input("Ваш выбор: ").strip()
-
+        print(f"\nСтатус: голод {status['hunger']}, здоровье {status['hp']}, энергия {status['energy']}, монет {status['coins']}")
+        print("1. Работа\n2. Купить еду\n3. Купить лекарство\n4. Покормить\n5. Вылечить\n6. Играть\n7. Отдых\n0. Выход")
         try:
+            choice = input("Выберите действие: ").strip()
+        except (EOFError, KeyboardInterrupt):
+            break
+        try:
+            if choice == "0":
+                break
             if choice == "1":
-                earned = game.work()
-                print(f"Вы поработали и заработали {earned} монет!")
+                print(f"Заработано {game.work()} монет")
             elif choice == "2":
-                print("Доступная еда:")
-                for i, f in enumerate(game.food):
-                    print(f"{i + 1}. {f.name} (сытность: {f.satiety}, цена: {f.price})")
-                f_idx = int(input("Номер еды для покупки: ")) - 1
-                game.buy_food(game.food[f_idx].name)
-                print("Еда успешно куплена!")
+                for i, item in enumerate(game.food, 1): print(f"{i}. {item.name} — {item.price}")
+                idx = int(input("Номер еды: ")) - 1
+                game.buy_food(game.food[idx].name)
             elif choice == "3":
-                print("Доступные лекарства:")
-                for i, m in enumerate(game.medicine):
-                    print(f"{i + 1}. {m.name} (лечит: {m.heal_hp}, цена: {m.price})")
-                m_idx = int(input("Номер лекарства для покупки: ")) - 1
-                game.buy_medicine(game.medicine[m_idx].name)
-                print("Лекарство успешно куплено!")
+                for i, item in enumerate(game.medicine, 1): print(f"{i}. {item.name} — {item.price}")
+                idx = int(input("Номер лекарства: ")) - 1
+                game.buy_medicine(game.medicine[idx].name)
             elif choice == "4":
-                if not status["inventory_food"]:
-                    print("У вас нет еды в инвентаре!")
-                    continue
-                f_name = input("Введите название еды из сумки: ").strip()
-                game.feed_tamagochi(f_name)
-                print("Питие/кормление прошло успешно.")
+                game.feed_tamagochi()
             elif choice == "5":
-                if not status["inventory_medicine"]:
-                    print("У вас нет лекарств в инвентаре!")
-                    continue
-                m_name = input("Введите название лекарства из сумки: ").strip()
-                game.heal_tamagochi(m_name)
-                print("Питомец подлечен.")
+                game.heal_tamagochi()
             elif choice == "6":
                 game.play_with_tamagochi()
-                print("Вы поиграли с питомцем.")
             elif choice == "7":
-                game.rest()
-                print("Питомец отдохнул.")
-            elif choice == "0":
-                print("Выход из игры...")
-                break
+                game.rest_tamagochi()
             else:
-                print("Неверный выбор, попробуйте снова.")
-        except Exception as e:
-            print(f"[Ошибка]: {e}")
+                print("Неверная команда")
+        except (ValueError, IndexError, Exception) as error:
+            print(f"Ошибка: {error}")
 
 
 if __name__ == "__main__":

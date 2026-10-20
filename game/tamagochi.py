@@ -3,108 +3,102 @@ from game.models import Food, Medicine
 
 
 class AbstractTamagochi(ABC):
-    """интерфейс тамагочи"""
+    """абстрактный интерфейс питомца"""
 
     @abstractmethod
     def feed(self, food: Food) -> None:
-        """накормить питомца"""
-        pass
+        """кормит питомца"""
 
     @abstractmethod
     def play(self) -> None:
-        """поиграть с питомцем"""
-        pass
+        """играет с питомцем"""
 
     @abstractmethod
     def rest(self) -> None:
-        """отдохнуть"""
-        pass
+        """восстанавливает силы питомца"""
 
     @abstractmethod
     def heal(self, medicine: Medicine) -> None:
-        """ылечить питомца"""
-        pass
+        """лечит питомца"""
 
     @abstractmethod
     def status(self) -> dict[str, int]:
-        """получить данные обо всех показателях питомца"""
-        pass
+        """возвращает показатели питомца"""
 
     @abstractmethod
     def is_alive(self) -> bool:
-        """метод для проверки, жив ли питомец"""
-        pass
+        """проверяет, жив ли питомец"""
 
     @abstractmethod
     def is_sick(self) -> bool:
-        """метод для проверки, болен ли питомец"""
-        pass
+        """проверяет, болен ли питомец"""
 
     @abstractmethod
     def update(self) -> None:
-        """метод для обновления состояния питомца"""
-        pass
+        """обновляет состояние питомца за тик"""
 
 
 class SimpleTamagochi(AbstractTamagochi):
-    """реализация питомца-тамагочи"""
+    """простая реализация питомца"""
 
-    def __init__(
-        self,
-        hunger: int = 50,
-        fatigue: int = 0,
-        health: int = 100,
-        energy: int = 100,
-    ) -> None:
-        """инициализация базовых показателей питомца"""
-        self._hunger = max(0, min(100, hunger))
-        self._fatigue = max(0, min(100, fatigue))
-        self._health = max(0, min(100, health))
-        self._energy = max(0, min(100, energy))
-        self._is_sick = False
+    def __init__(self, hunger: int = 50, fatigue: int = 0, hp: int = 100, energy: int = 100) -> None:
+        """инициализирует показатели питомца"""
+        self._hunger = self._bound(hunger)
+        self._fatigue = self._bound(fatigue)
+        self._hp = self._bound(hp)
+        self._energy = self._bound(energy)
+        self._sick = False
+
+    @staticmethod
+    def _bound(value: int) -> int:
+        """ограничивает показатель диапазоном от 0 до 100"""
+        return max(0, min(100, value))
 
     def feed(self, food: Food) -> None:
-        """уменьшает голод питомца при кормлении"""
-        self._hunger = max(0, self._hunger - food.satiety)
+        """уменьшает голод, немного снижая энергию"""
+        self._hunger = self._bound(self._hunger - food.satiety)
+        self._energy = self._bound(self._energy - 5)
 
     def play(self) -> None:
-        """увеличивает усталость и снижает энергию при игре"""
-        self._fatigue = min(100, self._fatigue + 15)
-        self._energy = max(0, self._energy - 20)
+        """повышает усталость и снижает энергию"""
+        self._fatigue = self._bound(self._fatigue + 15)
+        self._energy = self._bound(self._energy - 20)
+        self._hunger = self._bound(self._hunger + 5)
 
     def rest(self) -> None:
-        """восстанавливает энергию и снижает усталость"""
-        self._energy = min(100, self._energy + 30)
-        self._fatigue = max(0, self._fatigue - 25)
+        """восстанавливает энергию и уменьшает усталость"""
+        multiplier = 0.5 if self._sick else 1
+        self._energy = self._bound(self._energy + int(30 * multiplier))
+        self._fatigue = self._bound(self._fatigue - int(25 * multiplier))
 
     def heal(self, medicine: Medicine) -> None:
-        """лечит питомца, повышая здоровье"""
-        self._health = min(100, self._health + medicine.heal_hp)
-        self._is_sick = False
+        """восстанавливает здоровье и использует дозу лекарства"""
+        if medicine.is_empty():
+            return
+        self._hp = self._bound(self._hp + medicine.heal_hp)
         medicine.uses += 1
+        self._sick = False
 
     def status(self) -> dict[str, int]:
-        """возвращает текущие показатели питомца в виде словаря"""
-        return {
-            "hunger": self._hunger,
-            "fatigue": self._fatigue,
-            "health": self._health,
-            "energy": self._energy,
-        }
+        """возвращает все числовые показатели питомца"""
+        return {"hunger": self._hunger, "fatigue": self._fatigue,
+                "hp": self._hp, "health": self._hp, "energy": self._energy}
 
     def is_alive(self) -> bool:
-        """проверяет, жив ли питомец"""
-        return self._health > 0
+        """возвращает True, если здоровье выше нуля"""
+        return self._hp > 0
 
     def is_sick(self) -> bool:
-        """ароверяет статус болезни питомца"""
-        return self._is_sick
+        """возвращает состояние болезни"""
+        return self._sick
 
     def update(self) -> None:
-        """обновляет параметры питомца за один игровой тик"""
-        self._hunger = min(100, self._hunger + 5)
-        self._fatigue = min(100, self._fatigue + 3)
+        """увеличивает голод и усталость; болезнь снижает здоровье"""
+        if not self.is_alive():
+            return
+        self._hunger = self._bound(self._hunger + 5)
+        self._fatigue = self._bound(self._fatigue + 3)
         if self._hunger >= 80 or self._fatigue >= 80:
-            self._is_sick = True
-        if self._is_sick:
-            self._health = max(0, self._health - 10)
+            self._sick = True
+        if self._sick:
+            self._hp = self._bound(self._hp - 10)
