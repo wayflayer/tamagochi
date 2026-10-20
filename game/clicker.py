@@ -3,27 +3,27 @@ import random
 
 
 class AbstractClicker(ABC):
-    """абстрактный интерфейс кликера"""
+    """Абстрактный интерфейс кликера."""
 
     @abstractmethod
     def __init__(self, income_per_click: int) -> None:
-        """создаёт кликер с заданным доходом"""
+        """Создаёт кликер с заданным доходом."""
 
     @abstractmethod
     def click(self) -> None:
-        """выполняет клик"""
+        """Выполняет клик."""
 
     @property
     @abstractmethod
     def income_per_click(self) -> int:
-        """возвращает доход за клик"""
+        """Возвращает доход за клик."""
 
 
 class SimpleRandomClicker(AbstractClicker):
-    """кликер с фиксированным доходом за действие"""
+    """Кликер с фиксированным доходом за действие."""
 
     def __init__(self, income_per_click: int = 10, max_income: int | None = None) -> None:
-        """инициализирует диапазон дохода"""
+        """Инициализирует диапазон дохода (или фиксированное значение)."""
         self._min_income = income_per_click
         self._max_income = max_income if max_income is not None else income_per_click
         if self._max_income < self._min_income:
@@ -32,9 +32,9 @@ class SimpleRandomClicker(AbstractClicker):
 
     @property
     def income_per_click(self) -> int:
-        """возвращает доход последнего клика"""
+        """Возвращает доход последнего клика."""
         return self._income
 
     def click(self) -> None:
-        """начисляет случайный доход в заданном диапазоне"""
+        """Начисляет случайный доход в заданном диапазоне."""
         self._income = random.randint(self._min_income, self._max_income)
