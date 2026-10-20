@@ -1,4 +1,5 @@
 from game.clicker import SimpleRandomClicker
+from game.exceptions import GameError
 from game.game import SimpleGame
 from game.models import Food, Medicine
 from game.tamagochi import SimpleTamagochi
@@ -46,7 +47,7 @@ def main() -> None:
                 game.rest_tamagochi()
             else:
                 print("Неверная команда")
-        except (ValueError, IndexError, Exception) as error:
+        except (ValueError, IndexError, GameError) as error:
             print(f"Ошибка: {error}")
 
 

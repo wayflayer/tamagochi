@@ -1,22 +1,14 @@
 class GameError(Exception):
     """базовое исключение для игры"""
 
-    pass
-
 
 class NotEnoughMoneyError(GameError):
     """вызывается, если недостаточно монет"""
-
-    pass
 
 
 class ItemNotFoundError(GameError):
     """вызывается, если предмет не найден"""
 
-    pass
-
 
 class PetIsDeadError(GameError):
-    """вызывается при попытке совершить действие с мертвым питомцем"""
-
-    pass
+    """вызывается при попытке совершить действие с мёртвым питомцем"""

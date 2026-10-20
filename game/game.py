@@ -1,6 +1,11 @@
 from abc import ABC, abstractmethod
+
 from game.clicker import AbstractClicker
-from game.exceptions import NotEnoughMoneyError, ItemNotFoundError, PetIsDeadError
+from game.exceptions import (
+    ItemNotFoundError,
+    NotEnoughMoneyError,
+    PetIsDeadError,
+)
 from game.models import Food, Medicine
 from game.tamagochi import AbstractTamagochi
 

@@ -1,5 +1,5 @@
-from abc import ABC, abstractmethod
 import random
+from abc import ABC, abstractmethod
 
 
 class AbstractClicker(ABC):
@@ -23,7 +23,7 @@ class SimpleRandomClicker(AbstractClicker):
     """кликер с фиксированным доходом за действие"""
 
     def __init__(self, income_per_click: int = 10, max_income: int | None = None) -> None:
-        """инициализирует диапазон дохода"""
+        """инициализирует диапазон дохода (или фиксированное значение)"""
         self._min_income = income_per_click
         self._max_income = max_income if max_income is not None else income_per_click
         if self._max_income < self._min_income:
